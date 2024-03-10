@@ -31,29 +31,37 @@ type Props = {
 
 const NavItems: React.FC<Props> = ({ activeItem, isMobile }) => {
     return (
-        <div className="hidden 800px:flex">
-            {
-                navItemsData && navItemsData.map((item, index) => (
-                    <Link href={item.url} key={index} passHref>
-                        <span className={`${activeItem === index
+        <>
+            <div className="hidden 800px:flex">
+                {
+                    navItemsData && navItemsData.map((item, index) => (
+                        <Link href={item.url} key={index} passHref>
+                            <span className={`${activeItem === index
                                 ? "dark:text-[#37a39a] text-[crimson]"
                                 : "dark:text-white text-black"
-                            } text-[18px] px-6 font-Poppins font-[400]`}>
-                            {item.name}
-                        </span>
-                    </Link>
-                ))
-            }
-            {isMobile && (
-                <div className="hidden 800px:block mt-5">
-                    <div className="w-full text-center py-6">
+                                } text-[18px] px-6 font-Poppins font-[400]`}>
+                                {item.name}
+                            </span>
+                        </Link>
+                    ))
+                }
+            </div>
+            <div>
+                {isMobile && (
+                    <div className="800px:hidden mt-5">
+                        <div className="text-center py-6">
+                            <Link passHref href={'/'}>
+                                <span className="font-Poppins text-black dark:text-white">ELearning</span>
+                            </Link>
+                        </div>
+
                         {navItemsData &&
                             navItemsData.map((item, index) => (
                                 <Link href={item.url} key={index} passHref>
                                     <span
                                         className={`${activeItem === index
-                                                ? "dark:text-[#37a39a] text-[crimson]"
-                                                : "dark:text-white text-black"
+                                            ? "dark:text-[#37a39a] text-[crimson]"
+                                            : "dark:text-white text-black"
                                             } block py-5 text-[18px] px-6 font-Poppins font-[400]`}
                                     >
                                         {item.name}
@@ -61,10 +69,9 @@ const NavItems: React.FC<Props> = ({ activeItem, isMobile }) => {
                                 </Link>
                             ))}
                     </div>
-                </div>
-            )}
-
-        </div>
+                )}
+            </div>
+        </>
     );
 };
 
