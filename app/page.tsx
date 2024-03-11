@@ -7,8 +7,9 @@ import Hero from './components/Route/Hero';
 
 interface Props { }
 const Page: FC<Props> = () => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [activeItem, setActiveItem] = useState(0);
+  const [route, setRoute] = useState("Verification");
   return (
     <div>
       <Heading
@@ -19,7 +20,10 @@ const Page: FC<Props> = () => {
       <Header
         open={open}
         onSetOpen={setOpen}
-        activeItem={activeItem} />
+        activeItem={activeItem}
+        onSetRoute={setRoute}
+        route={route}
+      />
       <Hero />
     </div>
   )
