@@ -13,7 +13,7 @@ const Page: FC<Props> = () => {
   return (
     <div>
       <Heading
-        title="ELearning"
+        title="LMS"
         description="ELearning is a platform for students to learn and get help from teachers"
         keywords="Prograaming, MERN, Redux, Machine Learning"
       />
