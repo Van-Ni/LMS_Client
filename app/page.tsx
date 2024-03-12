@@ -9,7 +9,11 @@ interface Props { }
 const Page: FC<Props> = () => {
   const [open, setOpen] = useState(true);
   const [activeItem, setActiveItem] = useState(0);
-  const [route, setRoute] = useState("Verification");
+  const [route, setRoute] = useState("Login");
+
+  const handleSetOpen = (isOpen: boolean) => {
+    setOpen(isOpen);
+  };
   return (
     <div>
       <Heading
@@ -19,7 +23,7 @@ const Page: FC<Props> = () => {
       />
       <Header
         open={open}
-        onSetOpen={setOpen}
+        onSetOpen={handleSetOpen}
         activeItem={activeItem}
         onSetRoute={setRoute}
         route={route}

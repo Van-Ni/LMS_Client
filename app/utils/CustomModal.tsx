@@ -28,7 +28,7 @@ const CustomModal: FC<Props> = ({ open, onSetOpen, onSetRoute, component: Compon
                 }}
             >
                 {/* Content of your modal */}
-                <Component onSetRoute={onSetRoute}/>
+                <Component onSetRoute={onSetRoute} onSetOpen={onSetOpen}/>
             </Box>
         </Modal>
     );
