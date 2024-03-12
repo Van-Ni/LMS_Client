@@ -9,17 +9,21 @@ interface Props { }
 const Page: FC<Props> = () => {
   const [open, setOpen] = useState(true);
   const [activeItem, setActiveItem] = useState(0);
-  const [route, setRoute] = useState("Verification");
+  const [route, setRoute] = useState("Login");
+
+  const handleSetOpen = (isOpen: boolean) => {
+    setOpen(isOpen);
+  };
   return (
     <div>
       <Heading
-        title="ELearning"
+        title="LMS"
         description="ELearning is a platform for students to learn and get help from teachers"
         keywords="Prograaming, MERN, Redux, Machine Learning"
       />
       <Header
         open={open}
-        onSetOpen={setOpen}
+        onSetOpen={handleSetOpen}
         activeItem={activeItem}
         onSetRoute={setRoute}
         route={route}

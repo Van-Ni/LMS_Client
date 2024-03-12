@@ -1,9 +1,11 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { FcGoogle } from 'react-icons/fc';
 import { AiOutlineEyeInvisible, AiOutlineEye, AiFillGithub } from "react-icons/ai";
 import { styles } from '../styles/style';
+import { useRegisterMutation } from '@/redux/features/auth/authApi';
+import toast from 'react-hot-toast';
 
 type Props = {
     onSetRoute: (route: string) => void;
@@ -22,6 +24,24 @@ const SignUp: FC<Props> = ({ onSetRoute }) => {
         email: "",
         password: ""
     };
+    const [register, {data, error, isSuccess }] = useRegisterMutation();
+
+    useEffect(() => {
+        if (isSuccess) {
+            const message = data?.message || "Registration successful";
+            toast.success(message);
+            onSetRoute("Verification");
+        }
+
+        if (error) {
+            if ("data" in error) {
+                const errorData = error as any;
+                toast.error(errorData.data.message || "An error occurred during registration");
+            }
+        }
+
+    }, [isSuccess, error]);
+
 
     const formik = useFormik({
         initialValues,
@@ -29,7 +49,8 @@ const SignUp: FC<Props> = ({ onSetRoute }) => {
         onSubmit: async ({ name, email, password }) => {
             // Handle form submission
             console.log(name, email, password);
-            onSetRoute("Verification")
+            // onSetRoute("Verification")
+            await register({ name, email, password });
         },
     });
 

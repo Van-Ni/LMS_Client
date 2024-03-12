@@ -1,7 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { styles } from '../styles/style';
 import { VscWorkspaceTrusted } from "react-icons/vsc";
+import { useSelector } from 'react-redux';
+import { useActivationMutation } from '@/redux/features/auth/authApi';
 
 type Props = {
     onSetRoute: (route: string) => void
@@ -15,6 +17,8 @@ type VerifyNumber = {
 }
 
 const Verification: React.FC<Props> = ({ onSetRoute }) => {
+    const { token } = useSelector((state: any) => state.auth);
+    const [activateUser, { isSuccess, error }] = useActivationMutation();
     const [invalidError, setInvalidError] = useState<boolean>(false);
     const inputRefs = [
         useRef<HTMLInputElement>(null),
@@ -29,9 +33,30 @@ const Verification: React.FC<Props> = ({ onSetRoute }) => {
         "3": "",
     })
 
-    const verifictionHandler = async () => {
-        setInvalidError(true);
+    useEffect(() => {
+        if (isSuccess) {
+            toast.success("Account activated successfully");
+            onSetRoute("Login"); // Change "someRoute" to the appropriate route after successful activation
+        }
 
+        if (error) {
+            if ("data" in error) {
+                const errorData = error as any;
+                toast.error(errorData.data.message);
+                setInvalidError(true);
+
+            } else {
+                console.log("An error occurred:", error);
+            }
+        }
+    }, [isSuccess, error]);
+    const verifictionHandler = async () => {
+        const verificationNumber = Object.values(verifyNumber).join("");
+        if (verificationNumber.length !== 4) {
+            setInvalidError(true);
+            return;
+        }
+        await activateUser({ activation_token: token, activation_code: verificationNumber });
     }
 
     const handleInputChange = (index: number, value: string) => {
