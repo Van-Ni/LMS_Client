@@ -9,6 +9,7 @@ import CustomModal from '../utils/CustomModal';
 import Login from './Auth/Login';
 import SignUp from './Auth/SignUp';
 import Verification from './Auth/Verification';
+import { useSelector } from 'react-redux';
 
 type Props = {
     open: boolean;
@@ -20,6 +21,7 @@ type Props = {
 const Header: FC<Props> = ({ activeItem, open, onSetOpen, route, onSetRoute }) => {
     const [active, setActive] = useState(false)
     const [openSidebar, setOpenSidebar] = useState(false)
+    const { user } = useSelector((state: any) => state.auth);
 
     if (typeof window !== "undefined") {
         window.addEventListener("scroll", () => {
@@ -55,11 +57,24 @@ const Header: FC<Props> = ({ activeItem, open, onSetOpen, route, onSetRoute }) =
                                     onClick={() => setOpenSidebar(true)}
                                 />
                             </div>
-                            <HiOutlineUserCircle
-                                size={25}
-                                className="cursor-pointer dark:text-white text-black"
-                                onClick={() => onSetOpen(true)}
-                            />
+                            {user.avatar ? (
+                                // Nếu có user, hiển thị hình ảnh người dùng
+                                <Link href={'/profile'}>
+                                    <img
+                                        src={user.avatar.url || 'avatar'} // Nếu user có avatar, sử dụng nó, ngược lại sử dụng 'avatar'
+                                        alt=""
+                                        className="w-[30px] h-[30px] rounded-full cursor-pointer"
+                                        onClick={() => onSetOpen(true)}
+                                    />
+                                </Link>
+                            ) : (
+                                // Nếu không có user, hiển thị biểu tượng mặc định
+                                <HiOutlineUserCircle
+                                    size={25}
+                                    className="dark:text-white text-black block cursor-pointer w-8 h-8" // Thay đổi class CSS theo nhu cầu của bạn
+                                    onClick={() => onSetOpen(true)}
+                                />
+                            )}
 
                         </div>
                     </div>

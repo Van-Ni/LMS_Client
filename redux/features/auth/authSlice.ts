@@ -21,9 +21,12 @@ const authSlice = createSlice({
             state.token = ""; // Reset token
             state.user = ""; // Reset user
         },
+        userInfo: (state, action) => {
+            state.user = action.payload.user; 
+        },
     },
 });
 
-export const { userRegistration, userLoggedIn } = authSlice.actions;
+export const { userRegistration, userLoggedIn, userInfo } = authSlice.actions;
 
 export default authSlice.reducer;

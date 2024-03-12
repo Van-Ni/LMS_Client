@@ -26,7 +26,7 @@ const Login: FC<Props> = ({ onSetRoute, onSetOpen }) => {
     };
     const [login, { data, error, isSuccess }] = useLoginMutation();
 
-    
+
     useEffect(() => {
         if (isSuccess) {
             const message = data?.message || "Login successfully";
@@ -49,7 +49,7 @@ const Login: FC<Props> = ({ onSetRoute, onSetOpen }) => {
         validationSchema: schema,
         onSubmit: async ({ email, password }) => {
             // Handle form submission
-            await login({email, password});
+            await login({ email, password });
         },
     });
 
