@@ -64,7 +64,6 @@ const Header: FC<Props> = ({ activeItem, open, onSetOpen, route, onSetRoute }) =
                                         src={user.avatar.url || 'avatar'} // Nếu user có avatar, sử dụng nó, ngược lại sử dụng 'avatar'
                                         alt=""
                                         className="w-[30px] h-[30px] rounded-full cursor-pointer"
-                                        onClick={() => onSetOpen(true)}
                                     />
                                 </Link>
                             ) : (
