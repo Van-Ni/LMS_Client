@@ -2,6 +2,7 @@ import React, { FC, useState, useEffect } from 'react';
 import SideBarProfile from './SidebarProfile';
 import { useLogoutQuery } from '@/redux/features/auth/authApi';
 import ProfileInfo from './ProfileInfo';
+import ChangePassword from './ChangePassword';
 // import SideBarProfile from './SideBarProfile';
 
 interface Props {
@@ -51,6 +52,9 @@ const Profile: FC<Props> = ({ user }) => {
             <div className="flex flex-1 bg-slate-900 overflow-y-auto justify-center items-center">
                 {active === 1 && (
                     <ProfileInfo avatar={avatar} user={user} />
+                )}
+                {active === 2 && (
+                    <ChangePassword user={user} />
                 )}
             </div>
         </div>

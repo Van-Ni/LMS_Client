@@ -2,6 +2,8 @@ import React, { FC } from 'react';
 import { RiLockPasswordLine } from "react-icons/ri";
 import { SiCoursera } from "react-icons/si";
 import { CiLogout } from "react-icons/ci";
+import { MdAdminPanelSettings } from "react-icons/md";
+import Link from 'next/link';
 type Props = {
     user: any;
     active: number;
@@ -41,6 +43,20 @@ const SideBarProfile: FC<Props> = ({ user, active, avatar, setActive, logoutHand
                     Enrolled Courses
                 </h5>
             </div>
+            {user?.role === "admin" && (
+                <Link href={'/admin'}>
+                    <div
+                        className={`flex items-center px-3 py-4 cursor-pointer ${active === 6 ? "bg-blue-900" : ""}`}
+                        onClick={() => setActive(6)}
+                    >
+                        <MdAdminPanelSettings />
+                        <h5 className="ml-2 block font-Poppins dark:text-white">
+                            Admin Dashboard
+                        </h5>
+                    </div>
+                </Link>
+            )}
+
             <div
                 className={`flex items-center px-3 py-4 cursor-pointer ${active === 4 ? "bg-blue-900" : ""}`}
                 onClick={() => {
