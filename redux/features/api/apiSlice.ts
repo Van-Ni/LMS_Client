@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { userInfo } from '../auth/authSlice';
 
 export const apiSlice = createApi({
   reducerPath: 'api',
@@ -6,12 +7,34 @@ export const apiSlice = createApi({
     baseUrl: process.env.NEXT_PUBLIC_SERVER_URL,
   }),
   endpoints: (builder) => ({
-    // Define your API endpoints here
-    // Example:
-    // fetchUsers: builder.query({
-    //   query: () => 'users',
-    // }),
+    refreshToken: builder.query({
+      query: () => ({
+        url: 'user/refresh', // Endpoint để làm mới token
+        method: 'GET',
+        credentials: 'include' as const, // Bao gồm các thông tin xác thực (có thể là cookie hoặc token)
+      }),
+    }),
+    loadUser: builder.query({
+      query: () => ({
+        url: 'user/me',
+        method: 'GET',
+        credentials: 'include' as const, // Bao gồm các thông tin xác thực (có thể là cookie hoặc token)
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const result = await queryFulfilled;
+          dispatch(
+            userInfo({
+              user: result.data.user,
+            })
+          );
+        } catch (error: any) {
+          console.log(error);
+          // Handle error if needed
+        }
+      },
+    }),
   }),
 });
 
-export const {  } = apiSlice;
+export const { useRefreshTokenQuery, useLoadUserQuery } = apiSlice;

@@ -1,5 +1,5 @@
 import { apiSlice } from "../api/apiSlice"; // Assuming this is the correct import path
-import { userLoggedIn, userRegistration } from "./authSlice";
+import { userLoggedIn, userLoggedOut, userRegistration } from "./authSlice";
 
 type RegistrationResponse = {
     message: string;
@@ -64,11 +64,27 @@ export const authApi = apiSlice.injectEndpoints({
                 }
             },
         }),
+        logout: builder.query({
+            query: () => ({
+                url: "user/logout",
+                method: "GET",
+                credentials: "include" as const,
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                try {
+                    dispatch(userLoggedOut());
+                } catch (error: any) {
+                    console.log(error);
+                    // Handle error if needed
+                }
+            },
+        }),
     }),
 });
 
-export const { 
+export const {
     useRegisterMutation,
     useActivationMutation,
-    useLoginMutation
- } = authApi;
+    useLoginMutation,
+    useLogoutQuery
+} = authApi;
