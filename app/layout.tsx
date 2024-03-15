@@ -7,6 +7,7 @@ import { Toaster } from 'react-hot-toast';
 import { Providers } from './Provider';
 import { useLoadUserQuery } from '@/redux/features/api/apiSlice';
 import Loader from './components/Loader/Loader';
+import { ProSidebarProvider } from 'react-pro-sidebar';
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -30,7 +31,9 @@ export default function RootLayout({
       <body suppressHydrationWarning={true} className={`${poppins.variable} ${josefin.variable} !bg-white bg-no-repeat dark:bg-gradient-to-b dark:from-gray-900 dark:to-black duration-300`}>
         <Providers>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <ProSidebarProvider>
             <Custom>{ children }</Custom>
+          </ProSidebarProvider>
             <Toaster
               position="top-center"
               reverseOrder={false}
