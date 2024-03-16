@@ -1,0 +1,31 @@
+import React, { FC } from 'react';
+import { AiFillStar, AiOutlineStar } from 'react-icons/ai';
+import { BsStarHalf } from 'react-icons/bs';
+
+type Props = {
+    rating: number;
+};
+
+const Rating: FC<Props> = ({ rating }) => {
+    const stars = [];
+
+    for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+            stars.push(
+                <AiFillStar key={i} size={20} className="cursor-pointer" />
+            );
+        } else if (i === Math.ceil(rating) && rating % 1 !== 0) {
+            stars.push(
+                <BsStarHalf key={i} size={20} className="cursor-pointer" />
+            );
+        } else {
+            stars.push(
+                <AiOutlineStar key={i} size={20} className="cursor-pointer" />
+            );
+        }
+    }
+
+    return <div className='flex'>{stars}</div>;
+};
+
+export default Rating;
