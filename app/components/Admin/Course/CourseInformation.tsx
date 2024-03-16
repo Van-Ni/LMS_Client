@@ -5,7 +5,7 @@ type CourseInfo = {
   description: string;
   price: number;
   estimatedPrice: number;
-  tags: string[];
+  tags: string;
   level: string;
   demoUrl: string;
   thumbnail: any;
@@ -37,8 +37,7 @@ const CourseInformation: FC<Props> = ({ courseInfo, setCourseInfo, active, setAc
   };
 
   const handleTagsChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const tags = e.target.value.split(',');
-    setCourseInfo({ ...courseInfo, tags });
+    setCourseInfo({ ...courseInfo, tags: e.target.value });
   };
 
   const handleLevelChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -125,7 +124,7 @@ const CourseInformation: FC<Props> = ({ courseInfo, setCourseInfo, active, setAc
             type="text"
             id="courseTags"
             name="courseTags"
-            value={courseInfo.tags.join(',')}
+            value={courseInfo.tags}
             onChange={handleTagsChange}
             placeholder="Enter course tags (separated by comma)..."
             className="appearance-none text-white bg-transparent border border-gray-300 rounded-md py-2 px-4 w-full leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
