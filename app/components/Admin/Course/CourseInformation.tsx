@@ -67,7 +67,7 @@ const CourseInformation: FC<Props> = ({ courseInfo, setCourseInfo, active, setAc
   }
 
   return (
-    <div className="p-6 rounded-lg shadow-md" style={{ width: "90%", minHeight: "500px", marginLeft: "20px" }}>
+    <div className="bg-[#1b326a59] p-6 rounded-lg shadow-md" style={{ width: "90%", minHeight: "500px", marginLeft: "20px" }}>
       <h2 className="text-xl font-semibold mb-6 text-white">Course Information</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-6">

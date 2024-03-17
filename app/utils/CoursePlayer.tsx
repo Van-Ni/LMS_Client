@@ -10,52 +10,50 @@ type Props = {
 };
 
 const CoursePlayer: FC<Props> = ({ videoUrl, courseData }) => {
-    // const [videoData, setVideoData] = useState({ otp: '', playbackInfo: '' });
-    // console.log('🚀 ~ videoData:', videoData)
+    console.log('🚀 ~ courseData:', courseData)
+    const [videoData, setVideoData] = useState({ otp: '', playbackInfo: '' });
+    console.log('🚀 ~ videoData:', videoData)
 
-    // const discountPercentage = ((courseData?.estimatedPrice - courseData.price) / courseData.estimatedPrice) * 100;
-    // const discountPercentagePrice = discountPercentage.toFixed(0)
-    const discountPercentagePrice = 20;
+    const discountPercentage = ((courseData?.estimatedPrice - courseData.price) / courseData.estimatedPrice) * 100;
+    const discountPercentagePrice = discountPercentage.toFixed(0)
 
-    // useEffect(() => {
-    //     axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}course/vdoCipher/getOTP`, { videoId: videoUrl })
-    //         .then((res) => {
-    //             setVideoData(res.data);
-    //         })
-    //         .catch((error) => {
-    //             console.error('Error fetching video data:', error);
-    //         });
-    // }, [videoUrl]);
+    useEffect(() => {
+        axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}course/vdoCipher/getOTP`, { videoId: videoUrl })
+            .then((res) => {
+                setVideoData(res.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching video data:', error);
+            });
+    }, [videoUrl]);
 
     return (
-        <div style={{ paddingTop: "41%", position: "relative" }}>
-            {/* {videoData.otp && videoData.playbackInfo && (
+        <div>
+            {videoData.otp && videoData.playbackInfo && (
                 <iframe
                     src={`https://player.vdocipher.com/v2/?otp=${videoData.otp}&playbackInfo=${videoData.playbackInfo}&player=0RE1bVuvJ4kmGWLV`}
                     style={{
                         border: 0,
-                        width: "90%",
-                        height: "100%", // Set the height to 100% to fill the container
-                        position: "absolute",
-                        top: 0,
+                        width: "100%",
+                        height: "400px",
                         left: 0,
                     }}
                     allowFullScreen
                     allow="encrypted-media"
                 ></iframe>
-            )} */}
+            )}
             <div className="text-white">
                 <h1 className="pt-5 text-2xl">
-                    {courseData?.price ? "Free" : `$${courseData?.price}`}
+                    {!courseData?.price ? "Free" : `$${courseData?.price}`}
                 </h1>
                 {courseData?.estimatedPrice && (
-                    <span className="text-xs mt-2 line-through">
+                    <span className="size-2 mt-2 mr-2 line-through">
                         {`$${courseData?.estimatedPrice}`}
                     </span>
                 )}
-                {courseData?.discountPercentagePrice && (
-                    <span className="text-xs mt-2">
-                        {`${courseData?.discountPercentagePrice}% OFF`}
+                {discountPercentagePrice && (
+                    <span className="size-2 mt-2">
+                        {`${discountPercentagePrice}% OFF`}
                     </span>
                 )}
             </div>
@@ -97,6 +95,14 @@ const CoursePlayer: FC<Props> = ({ videoUrl, courseData }) => {
                         <h1 className="text-lg font-semibold">What you will learn from this course?</h1>
                         <ul className="list-disc pl-5">
                             {courseData?.benefits?.map((item: any, index: number) => (
+                                <li key={index} className="mt-2">{item?.title}</li>
+                            ))}
+                        </ul>
+                    </div>
+                    <div className="mt-6">
+                        <h1 className="text-lg font-semibold">What are the prerequisites for starting this courses?</h1>
+                        <ul className="list-disc pl-5">
+                            {courseData?.prerequisites?.map((item: any, index: number) => (
                                 <li key={index} className="mt-2">{item?.title}</li>
                             ))}
                         </ul>

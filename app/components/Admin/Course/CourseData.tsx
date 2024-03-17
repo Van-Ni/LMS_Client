@@ -44,7 +44,7 @@ const CourseData: FC<Props> = ({
     }
     return (
         <>
-            <div className="m-auto mt-24 px-4">
+            <div className="bg-[#1b326a59] m-auto mt-24 px-4">
                 <label htmlFor="courseName" className="block text-sm font-medium text-white mb-1">What are the benefits for students in this course?</label>
                 <br />
                 {benefits.map((benefit: any, index: number) => (
@@ -61,7 +61,7 @@ const CourseData: FC<Props> = ({
                 ))}
                 <MdAddCircleOutline size={30} className='mt-4 text-white' onClick={handleAddBenefit} />
             </div>
-            <div className="m-auto mt-10 px-4">
+            <div className="bg-[#1b326a59] m-auto mt-10 px-4">
                 <label htmlFor="courseName" className="block text-sm font-medium text-white mb-1">What are the prerequisites for starting in this course?</label>
                 <br />
                 {prerequisites.map((prerequisite: any, index: number) => (
@@ -78,7 +78,7 @@ const CourseData: FC<Props> = ({
                 ))}
                 <MdAddCircleOutline size={30} className='mt-4 text-white' onClick={handleAddPrerequisite} />
             </div>
-            <div className="flex justify-end">
+            <div className="mt-3 flex justify-end">
                 <button
                     onClick={() => setActive(active - 1)}
                     type="submit"
