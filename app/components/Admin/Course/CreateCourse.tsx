@@ -1,10 +1,13 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import CourseInformation from './CourseInformation';
 import CourseOptions from './CourseOptions';
 import CourseData from './CourseData';
 import CourseContent from './CourseContent';
 import axios from 'axios';
 import CoursePreview from './CoursePreview';
+import { useCreateCourseMutation } from '@/redux/features/courses/coursesApi';
+import toast from 'react-hot-toast';
+import { redirect } from 'next/navigation';
 
 type CourseInfo = {
     name: string;
@@ -22,8 +25,7 @@ type Props = {
 };
 
 const CreateCourse: FC<Props> = () => {
-    const [active, setActive] = useState(3);
-
+    const [active, setActive] = useState(0);
     // CourseInformation
     const [courseInfo, setCourseInfo] = useState<CourseInfo>({
         name: '',
@@ -35,7 +37,6 @@ const CreateCourse: FC<Props> = () => {
         demoUrl: '',
         thumbnail: ''
     });
-    console.log('🚀 ~ courseInfo:', courseInfo)
 
     // CourseData
     const [benefits, setBenefits] = useState([{ title: "" }]);
@@ -58,40 +59,25 @@ const CreateCourse: FC<Props> = () => {
         }]
     );
     const [courseData, setCourseData] = useState({});
+    const [createCourse, { isLoading, isSuccess, error }] = useCreateCourseMutation();
+
+
+    useEffect(() => {
+        if (isSuccess) {
+            toast.success("Course created successfully");
+        }
+        if (error) {
+            if ("data" in error) {
+                const errorData = error as any;
+                toast.error(errorData.data.message || "An error occurred during registration");
+            }
+        }
+
+    }, [isSuccess, error]);
 
     const handleSubmit = async () => {
-        const formData = new FormData();
-
-        // Create a single object for course info to improve readability
-        const courseData = {
-            name: courseInfo.name,
-            description: courseInfo.description,
-            price: courseInfo.price.toString(),
-            estimatedPrice: courseInfo.estimatedPrice.toString(),
-            tags: courseInfo.tags,
-            level: courseInfo.level,
-            demoUrl: courseInfo.demoUrl,
-            image: courseInfo.thumbnail,
-        };
-        console.log('🚀 ~ handleSubmit ~ courseData:', courseData)
-
-        // Add course data efficiently
-        Object.entries(courseData).forEach(([key, value]) => {
-            formData.append(key, value);
-        });
-
-
-        // Create benefit and prerequisite objects for cleaner structure
         const benefitsData = benefits.map((benefit) => ({ title: benefit.title }));
-        console.log('🚀 ~ handleSubmit ~ benefitsData:', benefitsData)
         const prerequisitesData = prerequisites.map((prerequisite) => ({ title: prerequisite.title }));
-        console.log('🚀 ~ handleSubmit ~ prerequisitesData:', prerequisitesData)
-
-        // Append benefit and prerequisite data efficiently
-        formData.append('benefits', JSON.stringify(benefitsData));
-        formData.append('prerequisites', JSON.stringify(prerequisitesData));
-
-        // Create course content objects for better organization
         const nextcourseContentData = courseContentData.map((content) => ({
             videoUrl: content.videoUrl,
             title: content.title,
@@ -100,11 +86,6 @@ const CreateCourse: FC<Props> = () => {
             links: content.links.map((link: any) => ({ title: link.title, url: link.url })),
             suggestion: content.suggestion,
         }));
-        console.log('🚀 ~ nextcourseContentData ~ nextcourseContentData:', nextcourseContentData)
-
-        // Append course content data efficiently
-        formData.append('courseContent', JSON.stringify(nextcourseContentData));
-
         const data = {
             name: courseInfo.name,
             description: courseInfo.description,
@@ -124,7 +105,76 @@ const CreateCourse: FC<Props> = () => {
     }
 
     const handleCreateCourse = async () => {
+        const formData = new FormData();
 
+        // Thêm thông tin về khóa học (courseInfo) vào FormData
+        formData.append('name', courseInfo.name);
+        formData.append('description', courseInfo.description);
+        formData.append('price', courseInfo.price.toString());
+        formData.append('estimatedPrice', courseInfo.estimatedPrice.toString());
+        formData.append('tags', courseInfo.tags);
+        formData.append('level', courseInfo.level);
+        formData.append('demoUrl', courseInfo.demoUrl);
+
+        // Nếu có ảnh thumbnail, bạn có thể thêm vào FormData
+        if (courseInfo.thumbnail) {
+            formData.append('image', courseInfo.thumbnail);
+        }
+
+        // Thêm thông tin về lợi ích của khóa học (benefits) vào FormData
+        benefits.forEach((benefit, index) => {
+            formData.append(`benefits[${index}][title]`, benefit.title);
+        });
+
+        // Thêm thông tin về các yêu cầu tiên quyết (prerequisites) vào FormData
+        prerequisites.forEach((prerequisite, index) => {
+            formData.append(`prerequisites[${index}][title]`, prerequisite.title);
+        });
+
+        // Thêm thông tin về nội dung khóa học (courseContentData) vào FormData
+        courseContentData.forEach((content, index) => {
+            formData.append(`courseContent[${index}][videoUrl]`, content.videoUrl);
+            formData.append(`courseContent[${index}][title]`, content.title);
+            formData.append(`courseContent[${index}][description]`, content.description);
+            formData.append(`courseContent[${index}][videoSection]`, content.videoSection);
+            formData.append(`courseContent[${index}][suggestion]`, content.suggestion);
+
+            // Thêm các liên kết (links) cho mỗi phần nội dung
+            content.links.forEach((link, linkIndex) => {
+                formData.append(`courseContent[${index}][links][${linkIndex}][title]`, link.title);
+                formData.append(`courseContent[${index}][links][${linkIndex}][url]`, link.url);
+            });
+        });
+
+        // Create a new course
+        try {
+            const response = await axios.post(
+                `${process.env.NEXT_PUBLIC_SERVER_URL}course`,
+                formData,
+                {
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            );
+            toast.success("Course created successfully");
+            // Handle success
+        } catch (error) {
+            // Xác định nếu error là một đối tượng chuỗi
+            if (typeof error === 'string') {
+                // Nếu error là một chuỗi, hiển thị nó trực tiếp
+                toast.error(error);
+                redirect("/admin/all-courses");
+            } else if (error instanceof Error) {
+                // Nếu error là một đối tượng lỗi, lấy thông điệp lỗi từ thuộc tính message
+                toast.error(error.message);
+            } else {
+                // Nếu không thể xác định được kiểu của error, hiển thị một thông điệp mặc định
+                toast.error('An unknown error occurred');
+            }
+
+        }
     }
     return (
         <>
