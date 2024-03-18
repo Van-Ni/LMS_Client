@@ -52,7 +52,7 @@ const DashboardHeader = () => {
     };
 
     return (
-        <AppBar position="static">
+        <AppBar position="static" sx={{backgroundColor: "rgb(15 23 42 / var(--tw-bg-opacity)) !important"}}>
             <Toolbar>
                 <div style={{ flexGrow: 1 }}>
                     <Typography variant="h6" style={{ fontWeight: 'bold', letterSpacing: 1 }}>Your Dashboard</Typography>

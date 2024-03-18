@@ -267,7 +267,7 @@ const AdminSidebar = () => {
                         </Typography>
                         <Item
                             title="Users"
-                            to="/team"
+                            to="/admin/users"
                             icon={<PeopleOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
@@ -296,7 +296,7 @@ const AdminSidebar = () => {
                         />
                         <Item
                             title="Live Courses"
-                            to="/calendar"
+                            to="/admin/courses"
                             icon={<CalendarTodayOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
