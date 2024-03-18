@@ -39,7 +39,6 @@ const DashboardHeader = () => {
 
     // Example usage:
     const notificationList: Notification[] = generateFakeNotifications();
-    console.log(notificationList);
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 

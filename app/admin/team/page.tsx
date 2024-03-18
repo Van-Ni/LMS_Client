@@ -28,7 +28,7 @@ const Page = (props: Props) => {
                 {/* Main content of the profile page */}
                 <div className="flex-1 bg-slate-900 overflow-y-auto">
                     <DashboardHeader />
-                    <AllUsers isTeam={false}/>
+                    <AllUsers isTeam={true}/>
                 </div>
             </div>
         </AdminProtected>

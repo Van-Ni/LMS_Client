@@ -329,6 +329,20 @@ const AdminSidebar = () => {
                             selected={selected}
                             setSelected={setSelected}
                         />
+                        <Typography
+                            variant="h6"
+                            color={colors.grey[300]}
+                            sx={{ m: "15px 20px 5px 20px" }}
+                        >
+                            Controllers
+                        </Typography>
+                        <Item
+                            title="Manage Team"
+                            to="/admin/team"
+                            icon={<PeopleOutlinedIcon />}
+                            selected={selected}
+                            setSelected={setSelected}
+                        />
                     </Box>
                 </Menu>
             </Sidebar>

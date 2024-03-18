@@ -1,19 +1,52 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { Box, Button, LinearProgress } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress } from "@mui/material";
 import { AiOutlineDelete } from "react-icons/ai";
 import { useTheme } from "next-themes";
 import { MdOutlineEdit } from "react-icons/md";
-import { useGetAllCoursesQuery } from "@/redux/features/courses/coursesApi";
+import { useDeleteCourseMutation, useGetAllCoursesQuery } from "@/redux/features/courses/coursesApi";
 import { format } from 'timeago.js';
+import toast from "react-hot-toast";
 // Define the type for props
 type Props = {
 };
 
 // Functional component AllCourses
 const AllCourses: React.FC<Props> = (props) => {
-    const { data, isLoading, error } = useGetAllCoursesQuery({});
-    console.log('🚀 ~ data:', data)
+    const { data, isLoading, error, refetch } = useGetAllCoursesQuery({}, { refetchOnMountOrArgChange: true });
+    const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [deleteItemId, setDeleteItemId] = useState(null);
+    const [deleteCourse, { error: deleteError, isSuccess: deleteSuccess }] = useDeleteCourseMutation();
+
+    useEffect(() => {
+        if (deleteSuccess) {
+            refetch();
+            toast.success("Course delete successfully");
+        }
+        if (deleteError) {
+            if ("data" in deleteError) {
+                const errorData = deleteError as any;
+                toast.error(errorData.data.message);
+            }
+        }
+        setDeleteDialogOpen(false);
+    }, [deleteSuccess, deleteError]);
+
+    const handleOpenDeleteDialog = (itemId: any) => {
+        setDeleteItemId(itemId);
+        setDeleteDialogOpen(true);
+    };
+
+    const handleCloseDeleteDialog = () => {
+        setDeleteItemId(null);
+        setDeleteDialogOpen(false);
+    };
+
+    const handleConfirmDelete = async () => {
+        // Call your delete function here
+        await deleteCourse({ id: deleteItemId });
+        handleCloseDeleteDialog();
+    };
     const columns = [
         {
             field: "id",
@@ -41,7 +74,7 @@ const AllCourses: React.FC<Props> = (props) => {
             headerName: "Created At",
             flex: 0.5,
             valueFormatter: ({ value }: any) => {
-                return format(value,'vi');
+                return format(value, 'vi');
             }
         },
         {
@@ -53,27 +86,12 @@ const AllCourses: React.FC<Props> = (props) => {
                     <Button sx={{ fontSize: '20px' }}>
                         <MdOutlineEdit className="text-white" />
                     </Button>
-                    <Button sx={{ fontSize: '20px' }}>
+                    <Button sx={{ fontSize: '20px' }} onClick={() => handleOpenDeleteDialog(params.row._id)}>
                         <AiOutlineDelete className="text-red-500" />
                     </Button>
                 </>
             )
         }
-    ];
-    const rows = [
-        { id: 1, title: "Course 1", ratings: 4.5, purchased: true, createdAt: "2023-01-15" },
-        { id: 2, title: "Course 2", ratings: 4.2, purchased: false, createdAt: "2023-02-20" },
-        { id: 3, title: "Course 3", ratings: 4.7, purchased: true, createdAt: "2023-03-10" },
-        { id: 4, title: "Course 1", ratings: 4.5, purchased: true, createdAt: "2023-01-15" },
-        { id: 5, title: "Course 2", ratings: 4.2, purchased: false, createdAt: "2023-02-20" },
-        { id: 6, title: "Course 3", ratings: 4.7, purchased: true, createdAt: "2023-03-10" },
-        { id: 7, title: "Course 1", ratings: 4.5, purchased: true, createdAt: "2023-01-15" },
-        { id: 8, title: "Course 2", ratings: 4.2, purchased: false, createdAt: "2023-02-20" },
-        { id: 9, title: "Course 3", ratings: 4.7, purchased: true, createdAt: "2023-03-10" },
-        { id: 10, title: "Course 1", ratings: 4.5, purchased: true, createdAt: "2023-01-15" },
-        { id: 11, title: "Course 2", ratings: 4.2, purchased: false, createdAt: "2023-02-20" },
-        { id: 12, title: "Course 3", ratings: 4.7, purchased: true, createdAt: "2023-03-10" },
-        // Add more rows as needed
     ];
 
     if (isLoading) return (<LinearProgress />);
@@ -143,6 +161,15 @@ const AllCourses: React.FC<Props> = (props) => {
                 checkboxSelection
                 disableRowSelectionOnClick
             />
+            {/* Delete Confirmation Dialog */}
+            <Dialog open={isDeleteDialogOpen} onClose={handleCloseDeleteDialog}>
+                <DialogTitle>Confirm Delete</DialogTitle>
+                <DialogContent>Are you sure you want to delete this item?</DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDeleteDialog} color="primary">Cancel</Button>
+                    <Button onClick={handleConfirmDelete} color="secondary">Delete</Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };
