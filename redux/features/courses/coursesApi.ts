@@ -13,7 +13,14 @@ export const courseApi = apiSlice.injectEndpoints({
                 }
             }),
         }),
+        getAllCourses: builder.query({
+            query: () => ({
+                url: "course/admin/all-courses",
+                method: "GET",
+                credentials: "include" as const,
+            }),
+        })
     }),
 });
 
-export const { useCreateCourseMutation } = courseApi;
+export const { useCreateCourseMutation, useGetAllCoursesQuery } = courseApi;
