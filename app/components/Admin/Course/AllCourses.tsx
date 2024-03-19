@@ -7,6 +7,7 @@ import { MdOutlineEdit } from "react-icons/md";
 import { useDeleteCourseMutation, useGetAllCoursesQuery } from "@/redux/features/courses/coursesApi";
 import { format } from 'timeago.js';
 import toast from "react-hot-toast";
+import Link from 'next/link';
 // Define the type for props
 type Props = {
 };
@@ -84,7 +85,9 @@ const AllCourses: React.FC<Props> = (props) => {
             renderCell: (params: any) => (
                 <>
                     <Button sx={{ fontSize: '20px' }}>
-                        <MdOutlineEdit className="text-white" />
+                        <Link href={`/admin/edit-course/${params.row._id}`}>
+                            <MdOutlineEdit className="text-white" />
+                        </Link>
                     </Button>
                     <Button sx={{ fontSize: '20px' }} onClick={() => handleOpenDeleteDialog(params.row._id)}>
                         <AiOutlineDelete className="text-red-500" />

@@ -169,7 +169,7 @@ const CourseInformation: FC<Props> = ({ courseInfo, setCourseInfo, active, setAc
             >
               {courseInfo.thumbnail ? (
                 <img
-                  src={URL.createObjectURL(courseInfo.thumbnail)}
+                  src={typeof courseInfo.thumbnail === "string" ? courseInfo.thumbnail : URL.createObjectURL(courseInfo.thumbnail)}
                   alt="Thumbnail"
                   className="object-cover w-full h-full rounded-md"
                 />

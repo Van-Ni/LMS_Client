@@ -1,5 +1,5 @@
 import CoursePlayer from '@/app/utils/CoursePlayer';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 
 type CourseData = any; // Update this with the actual type for your course data
 
@@ -11,7 +11,7 @@ type Props = {
 };
 
 const CoursePreview: FC<Props> = ({ active, setActive, courseData, handleCreateCourse }) => {
-
+    const [isSubmit, setIsSubmit] = useState(false);
     return (
         <div style={{ maxWidth: '90%', margin: 'auto', paddingTop: '5px', paddingBottom: '5px', marginBottom: '5px' }}>
             {/* Your course preview content goes here */}
@@ -25,11 +25,12 @@ const CoursePreview: FC<Props> = ({ active, setActive, courseData, handleCreateC
                     Prev
                 </button>
                 <button
+                    disabled={isSubmit}
                     onClick={handleCreateCourse}
                     type="submit"
                     className="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 focus:outline-none focus:bg-indigo-600"
                 >
-                    Create Course
+                    Save Course
                 </button>
             </div>
         </div>
