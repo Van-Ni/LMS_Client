@@ -5,10 +5,9 @@ import CourseData from './CourseData';
 import CourseContent from './CourseContent';
 import axios from 'axios';
 import CoursePreview from './CoursePreview';
-import { useCreateCourseMutation } from '@/redux/features/courses/coursesApi';
+import { useCreateCourseMutation, useGetAllCoursesQuery } from '@/redux/features/courses/coursesApi';
 import toast from 'react-hot-toast';
 import { redirect } from 'next/navigation';
-import { initializeApp } from '@/redux/store';
 
 type CourseInfo = {
     name: string;
@@ -23,10 +22,15 @@ type CourseInfo = {
 
 type Props = {
     // Define your props here if needed
+    id: string;
 };
 
-const CreateCourse: FC<Props> = () => {
+const EditCourse: FC<Props> = ({ id }) => {
     const [active, setActive] = useState(0);
+    const { data, isLoading, error, refetch } = useGetAllCoursesQuery({}, { refetchOnMountOrArgChange: true });
+    const editCourseData = data?.courses.find((c: any) => c._id === id);
+    console.log('🚀 ~ editCourseData:', editCourseData)
+
     // CourseInformation
     const [courseInfo, setCourseInfo] = useState<CourseInfo>({
         name: '',
@@ -38,6 +42,7 @@ const CreateCourse: FC<Props> = () => {
         demoUrl: '',
         thumbnail: ''
     });
+    console.log("courseInfo",courseInfo);
 
     // CourseData
     const [benefits, setBenefits] = useState([{ title: "" }]);
@@ -60,21 +65,32 @@ const CreateCourse: FC<Props> = () => {
         }]
     );
     const [courseData, setCourseData] = useState({});
-    const [createCourse, { isLoading, isSuccess, error }] = useCreateCourseMutation();
 
 
     useEffect(() => {
-        if (isSuccess) {
-            toast.success("Course created successfully");
+        if (editCourseData) {
+            setCourseInfo({
+                name: editCourseData.name,
+                description: editCourseData.description,
+                price: editCourseData.price,
+                estimatedPrice: editCourseData.estimatedPrice,
+                tags: editCourseData.tags,
+                level: editCourseData.level,
+                demoUrl: editCourseData.demoUrl,
+                thumbnail: editCourseData?.thumbnail?.url || '', // Thêm || '' để xử lý trường hợp thumbnail không tồn tại
+            });
+            setBenefits(editCourseData.benefits);
+            setPrerequisites(editCourseData.prerequisites);
+            setCourseContentData(editCourseData.courseData);
         }
-        if (error) {
-            if ("data" in error) {
-                const errorData = error as any;
-                toast.error(errorData.data.message || "An error occurred during registration");
-            }
-        }
+    }, [editCourseData]);
 
-    }, [isSuccess, error]);
+
+    useEffect(() => {
+        if (editCourseData) {
+
+        }
+    }, [editCourseData]);
 
     const handleSubmit = async () => {
         const benefitsData = benefits.map((benefit) => ({ title: benefit.title }));
@@ -107,7 +123,6 @@ const CreateCourse: FC<Props> = () => {
 
     const handleCreateCourse = async () => {
         const formData = new FormData();
-
         // Thêm thông tin về khóa học (courseInfo) vào FormData
         formData.append('name', courseInfo.name);
         formData.append('description', courseInfo.description);
@@ -149,8 +164,8 @@ const CreateCourse: FC<Props> = () => {
 
         // Create a new course
         try {
-            const response = await axios.post(
-                `${process.env.NEXT_PUBLIC_SERVER_URL}course`,
+            const response = await axios.put(
+                `${process.env.NEXT_PUBLIC_SERVER_URL}course/${id}`,
                 formData,
                 {
                     withCredentials: true,
@@ -159,7 +174,7 @@ const CreateCourse: FC<Props> = () => {
                     },
                 }
             );
-            toast.success("Course created successfully");
+            toast.success("Course update successfully");
             window.location.href = "/admin/courses";
             // Handle success
         } catch (error) {
@@ -215,4 +230,4 @@ const CreateCourse: FC<Props> = () => {
     );
 };
 
-export default CreateCourse;
+export default EditCourse;

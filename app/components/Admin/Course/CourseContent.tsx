@@ -173,8 +173,12 @@ const CourseContent: FC<Props> = ({ courseContentData, setCourseContentData, act
                         className="appearance-none text-white bg-transparent border border-gray-300 rounded-md py-2 px-4 w-full leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                         value={item.title}
                         onChange={(e) => {
-                          const updatedData = [...courseContentData];
-                          updatedData[index].title = e.target.value;
+                          const updatedData = courseContentData.map((item, idx) => {
+                            if (idx === index) {
+                              return { ...item, title: e.target.value };
+                            }
+                            return item;
+                          });
                           setCourseContentData(updatedData);
                         }}
                       />
@@ -189,9 +193,11 @@ const CourseContent: FC<Props> = ({ courseContentData, setCourseContentData, act
                         className="appearance-none text-white bg-transparent border border-gray-300 rounded-md py-2 px-4 w-full leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                         value={item.videoUrl}
                         onChange={(e) => {
-                          const updatedData = [...courseContentData];
-                          updatedData[index].videoUrl = e.target.value;
-                          setCourseContentData(updatedData);
+                          setCourseContentData(prevCourseContentData => {
+                            const updatedData = [...prevCourseContentData]; // Using previous state
+                            updatedData[index].videoUrl = e.target.value;
+                            return updatedData;
+                          });
                         }}
                       />
                     </div>
@@ -202,9 +208,11 @@ const CourseContent: FC<Props> = ({ courseContentData, setCourseContentData, act
                         id={`videoDescription${index}`}
                         value={item.description}
                         onChange={(e) => {
-                          const updatedData = [...courseContentData];
-                          updatedData[index].description = e.target.value;
-                          setCourseContentData(updatedData);
+                          setCourseContentData(prevCourseContentData => {
+                            const updatedData = [...prevCourseContentData]; // Creating a copy of the previous state
+                            updatedData[index].description = e.target.value; // Updating description property
+                            return updatedData; // Returning the updated state
+                          });
                         }}
                       />
                     </div>
@@ -226,9 +234,13 @@ const CourseContent: FC<Props> = ({ courseContentData, setCourseContentData, act
                           className="mb-3 appearance-none text-white bg-transparent border border-gray-300 rounded-md py-2 px-4 w-full leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                           value={link.title}
                           onChange={(e) => {
-                            const updatedData = [...courseContentData]; // Create a copy of the state array
-                            updatedData[index].links[linkIndex].title = e.target.value; // Update the title of the link
-                            setCourseContentData(updatedData); // Update the state with the modified array
+                            setCourseContentData(prevCourseContentData => {
+                              const updatedData = [...prevCourseContentData]; // Creating a copy of the previous state array
+                              updatedData[index].links = [...updatedData[index].links]; // Create a copy of the links array
+                              updatedData[index].links[linkIndex] = { ...updatedData[index].links[linkIndex] }; // Create a copy of the link object
+                              updatedData[index].links[linkIndex].title = e.target.value; // Update the title of the link
+                              return updatedData; // Returning the updated state
+                            });
                           }}
                         />
                         <input
@@ -237,9 +249,14 @@ const CourseContent: FC<Props> = ({ courseContentData, setCourseContentData, act
                           className="appearance-none text-white bg-transparent border border-gray-300 rounded-md py-2 px-4 w-full leading-tight focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                           value={link.url}
                           onChange={(e) => {
-                            const updatedData = [...courseContentData]; // Create a copy of the state array
-                            updatedData[index].links[linkIndex].url = e.target.value; // Update the URL of the link
-                            setCourseContentData(updatedData); // Update the state with the modified array
+                            setCourseContentData(prevCourseContentData => {
+                              const updatedData = [...prevCourseContentData]; // Creating a copy of the previous state array
+                              updatedData[index] = { ...updatedData[index] }; // Create a copy of the specific item object
+                              updatedData[index].links = [...updatedData[index].links]; // Create a copy of the links array within the specific item
+                              updatedData[index].links[linkIndex] = { ...updatedData[index].links[linkIndex] }; // Create a copy of the link object
+                              updatedData[index].links[linkIndex].url = e.target.value; // Update the URL of the link
+                              return updatedData; // Returning the updated state
+                            });
                           }}
                         />
                         {/* add link button */}

@@ -20,17 +20,22 @@ const CourseData: FC<Props> = ({
     setActive
 }) => {
     const handleBenefitChange = (index: number, value: any) => {
-        const updatedBenefits = [...benefits];
-        updatedBenefits[index].title = value;
-        setBenefits(updatedBenefits);
+        setBenefits((prevBenefits: { title: string }[]) => {
+            const updatedBenefits = [...prevBenefits]; // Tạo một bản sao của prevState
+            updatedBenefits[index] = { ...updatedBenefits[index], title: value }; // Cập nhật thuộc tính title ở vị trí index
+            console.log('🚀 ~ handleBenefitChange ~ updatedBenefits:', updatedBenefits);
+            return updatedBenefits; // Trả về mảng đã được cập nhật
+        });
     };
     const handleAddBenefit = () => {
         setBenefits([...benefits, { title: '' }]);
     };
     const handlePrerequisiteChange = (index: number, value: any) => {
-        const updatedPrerequisites = [...prerequisites];
-        updatedPrerequisites[index].title = value;
-        setPrerequisites(updatedPrerequisites);
+        setPrerequisites((prevPrerequisites: { title: string }[]) => {
+            const updatedPrerequisites = [...prevPrerequisites]; // Tạo một bản sao của prevState
+            updatedPrerequisites[index] = { ...updatedPrerequisites[index], title: value }; // Cập nhật thuộc tính title ở vị trí index
+            return updatedPrerequisites; // Trả về mảng đã được cập nhật
+        });
     };
     const handleAddPrerequisite = () => {
         setPrerequisites([...prerequisites, { title: '' }]);

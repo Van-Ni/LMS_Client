@@ -21,7 +21,7 @@ const store = configureStore({
 
 export default store;
 
-const initializeApp = async () => {
+export const initializeApp = async () => {
   try {
     // Gọi hàm refresh token từ endpoint refreshToken
     await store.dispatch(apiSlice.endpoints.refreshToken.initiate({}, { forceRefetch: true }));
